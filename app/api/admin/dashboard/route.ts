@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       prisma.donation.aggregate({
         where: { status: 'COMPLETED' },
         _sum: { amount: true }
-      }).then(result => result._sum.amount || 0),
+      }).then((result: { _sum: { amount: any } }) => result._sum.amount || 0),
       
       // Total active volunteers
       prisma.volunteer.count({ where: { isActive: true } }),
