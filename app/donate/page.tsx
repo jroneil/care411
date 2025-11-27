@@ -51,6 +51,16 @@ export default function DonatePage() {
   }
 
   const handleDonation = async () => {
+    // Payment functionality temporarily disabled
+    toast({
+      title: "Donations Temporarily Disabled",
+      description: "We're currently updating our payment system. Please check back soon or contact us directly to make a donation.",
+      variant: "default"
+    })
+    return
+    
+    // Original payment code commented out for now
+    /*
     const amount = getDonationAmount()
     
     if (amount < 1) {
@@ -110,6 +120,7 @@ export default function DonatePage() {
     } finally {
       setIsProcessing(false)
     }
+    */
   }
 
   const currentImpact = impactExamples.find(impact => impact.amount === getDonationAmount()) ||
@@ -264,9 +275,16 @@ export default function DonatePage() {
                       )}
                     </Button>
 
-                    <p className="text-xs text-gray-500 text-center">
-                      Secure payment processed by Stripe. We never store your payment information.
-                    </p>
+                    <div className="space-y-2">
+                      <p className="text-xs text-gray-500 text-center">
+                        Secure payment processed by Stripe. We never store your payment information.
+                      </p>
+                      <div className="bg-amber-50 border border-amber-200 rounded-md p-3">
+                        <p className="text-sm text-amber-800 text-center">
+                          <strong>Note:</strong> Online donations are temporarily unavailable. Please contact us directly to make a donation.
+                        </p>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>

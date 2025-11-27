@@ -1,15 +1,24 @@
 
 import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
-import { prisma } from '@/lib/db'
+// Temporarily disabled - remove Stripe imports to avoid build errors
+// import Stripe from 'stripe'
+// import { prisma } from '@/lib/db'
 
 export const dynamic = "force-dynamic"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-})
+// Temporarily disabled - payment functionality
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+//   apiVersion: '2025-10-29.clover',
+// })
 
 export async function POST(request: NextRequest) {
+  // Payment functionality temporarily disabled
+  return NextResponse.json(
+    { error: 'Payment processing is temporarily disabled. Please contact us directly to make a donation.' },
+    { status: 503 } // Service Unavailable
+  )
+  
+  /* Original code commented out
   try {
     const { amount, donorName, donorEmail, message, isAnonymous } = await request.json()
 
@@ -67,4 +76,5 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+  */
 }
