@@ -1,0 +1,159 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+  
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+// User model for authentication
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  firstName     String?
+  lastName      String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  events        Event[]
+  
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+// Donations model
+model Donation {
+  id                String    @id @default(cuid())
+  stripePaymentId   String    @unique
+  amount            Float     // Amount in dollars
+  currency          String    @default("usd")
+  donorName         String?
+  donorEmail        String?
+  message           String?
+  isAnonymous       Boolean   @default(false)
+  status            PaymentStatus @default(PENDING)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("donations")
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// Volunteers model
+model Volunteer {
+  id              String    @id @default(cuid())
+  firstName       String
+  lastName        String
+  email           String    @unique
+  phone           String?
+  address         String?
+  city            String?
+  zipCode         String?
+  skills          String?   // Comma-separated skills
+  availability    String?   // Preferred times/days
+  interests       String?   // Areas of interest
+  experience      String?   // Previous volunteer experience
+  emergencyContact String?
+  emergencyPhone   String?
+  backgroundCheck  Boolean  @default(false)
+  isActive        Boolean   @default(true)
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("volunteers")
+}
+
+// Events model
+model Event {
+  id            String    @id @default(cuid())
+  title         String
+  description   String?
+  location      String?
+  address       String?
+  startDate     DateTime
+  endDate       DateTime?
+  startTime     String?   // Time as string (e.g., "2:00 PM")
+  endTime       String?
+  isAllDay      Boolean   @default(false)
+  category      EventCategory @default(COMMUNITY)
+  maxVolunteers Int?
+  currentVolunteers Int @default(0)
+  isPublic      Boolean   @default(true)
+  isActive      Boolean   @default(true)
+  imageUrl      String?
+  contactEmail  String?
+  contactPhone  String?
+  requirements  String?   // Special requirements or instructions
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  createdBy     User      @relation(fields: [createdById], references: [id])
+  createdById   String
+
+  @@map("events")
+}
+
+enum EventCategory {
+  COMMUNITY
+  FOOD_DISTRIBUTION
+  VOLUNTEER_TRAINING
+  FUNDRAISING
+  EDUCATIONAL
+  SEASONAL
+  OTHER
+}
+
+// Contact submissions model
+model ContactSubmission {
+  id          String    @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  subject     String?
+  message     String
+  isUrgent    Boolean   @default(false)
+  status      ContactStatus @default(NEW)
+  response    String?
+  respondedAt DateTime?
+  respondedBy String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("contact_submissions")
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+// Newsletter subscriptions
+model NewsletterSubscription {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("newsletter_subscriptions")
+}
