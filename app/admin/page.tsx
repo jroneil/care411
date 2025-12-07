@@ -2,8 +2,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
   BarChart3, 
@@ -61,21 +59,12 @@ interface DashboardStats {
 }
 
 export default function AdminDashboard() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (status === 'loading') return
-    
-    if (!session || session.user?.role !== 'ADMIN') {
-      router.push('/admin/login')
-      return
-    }
-
     fetchDashboardStats()
-  }, [session, status, router])
+  }, [])
 
   const fetchDashboardStats = async () => {
     try {
@@ -91,7 +80,7 @@ export default function AdminDashboard() {
     }
   }
 
-  if (status === 'loading' || isLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen">
         <Header />
@@ -104,10 +93,6 @@ export default function AdminDashboard() {
         <Footer />
       </div>
     )
-  }
-
-  if (!session || session.user?.role !== 'ADMIN') {
-    return null
   }
 
   const formatCurrency = (amount: number) => {
@@ -141,6 +126,9 @@ export default function AdminDashboard() {
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
                 <p className="text-gray-600">Welcome back! Here&apos;s your organization overview.</p>
+                <p className="text-sm text-orange-700 bg-orange-50 border border-orange-200 rounded-md px-3 py-2 mt-3">
+                  Authentication and database connections are disabled right now. The dashboard is showing sample data only.
+                </p>
               </div>
               <div className="mt-4 lg:mt-0">
                 <Badge variant="secondary" className="bg-teal-100 text-teal-800">
