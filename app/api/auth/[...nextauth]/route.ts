@@ -1,7 +1,9 @@
+import { NextResponse } from 'next/server'
 
-import NextAuth from 'next-auth'
-import { authOptions } from '@/lib/auth'
+export function GET() {
+  return NextResponse.json({ message: 'Authentication is temporarily disabled.' }, { status: 503 })
+}
 
-const handler = NextAuth(authOptions)
-
-export { handler as GET, handler as POST }
+export function POST() {
+  return NextResponse.json({ message: 'Authentication is temporarily disabled.' }, { status: 503 })
+}

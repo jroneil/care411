@@ -6,11 +6,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Heart, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useSession, signOut } from 'next-auth/react'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { data: session } = useSession()
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
@@ -57,16 +55,9 @@ export function Header() {
                 Donate
               </Link>
             </Button>
-            {session?.user?.role === 'ADMIN' && (
-              <Button variant="outline" asChild>
-                <Link href="/admin">Admin</Link>
-              </Button>
-            )}
-            {session && (
-              <Button variant="ghost" onClick={() => signOut()}>
-                Logout
-              </Button>
-            )}
+            <Button variant="outline" asChild>
+              <Link href="/admin">Admin</Link>
+            </Button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -126,23 +117,11 @@ export function Header() {
                 </Link>
               </Button>
             </div>
-            {session?.user?.role === 'ADMIN' && (
-              <div className="px-3 py-2">
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link>
-                </Button>
-              </div>
-            )}
-            {session && (
-              <div className="px-3 py-2">
-                <Button variant="ghost" className="w-full" onClick={() => {
-                  signOut()
-                  setIsMenuOpen(false)
-                }}>
-                  Logout
-                </Button>
-              </div>
-            )}
+            <div className="px-3 py-2">
+              <Button variant="outline" asChild className="w-full">
+                <Link href="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link>
+              </Button>
+            </div>
           </div>
         )}
       </div>

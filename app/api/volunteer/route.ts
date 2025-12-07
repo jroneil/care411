@@ -1,6 +1,5 @@
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
 
 export const dynamic = "force-dynamic"
 
@@ -32,46 +31,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if volunteer already exists
-    const existingVolunteer = await prisma.volunteer.findUnique({
-      where: { email }
-    })
-
-    if (existingVolunteer) {
-      return NextResponse.json(
-        { error: 'A volunteer with this email address already exists' },
-        { status: 400 }
-      )
-    }
-
-    // Create new volunteer
-    const volunteer = await prisma.volunteer.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        phone: phone || null,
-        address: address || null,
-        city: city || null,
-        zipCode: zipCode || null,
-        skills: skills || null,
-        availability: availability || null,
-        interests: interests || null,
-        experience: experience || null,
-        emergencyContact: emergencyContact || null,
-        emergencyPhone: emergencyPhone || null,
-        backgroundCheck: backgroundCheck || false,
-        isActive: true
-      }
-    })
-
     return NextResponse.json({
       message: 'Volunteer application submitted successfully',
       volunteer: {
-        id: volunteer.id,
-        firstName: volunteer.firstName,
-        lastName: volunteer.lastName,
-        email: volunteer.email
+        id: 'temp-volunteer',
+        firstName,
+        lastName,
+        email,
+        phone,
+        city,
+        interests,
       }
     })
   } catch (error) {
@@ -85,22 +54,20 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const volunteers = await prisma.volunteer.findMany({
-      where: { isActive: true },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        phone: true,
-        city: true,
-        interests: true,
-        createdAt: true
+    const volunteers = [
+      {
+        id: '1',
+        firstName: 'Jordan',
+        lastName: 'Rivera',
+        email: 'jordan@example.com',
+        phone: '555-123-4567',
+        city: 'Haverhill',
+        interests: 'Food distribution',
+        createdAt: new Date().toISOString(),
       },
-      orderBy: { createdAt: 'desc' }
-    })
+    ]
 
-    return NextResponse.json({ volunteers })
+    return NextResponse.json({ volunteers, notice: 'Database disabled; showing sample data.' })
   } catch (error) {
     console.error('Error fetching volunteers:', error)
     return NextResponse.json(

@@ -1,27 +1,31 @@
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
 
 export const dynamic = "force-dynamic"
 
 export async function GET() {
   try {
-    const events = await prisma.event.findMany({
-      where: { 
-        isActive: true,
-        isPublic: true 
-      },
-      orderBy: { startDate: 'asc' },
-      include: {
-        createdBy: {
-          select: {
-            firstName: true,
-            lastName: true,
-            email: true
-          }
-        }
+    const events = [
+      {
+        id: '1',
+        title: 'Community Food Drive',
+        description: 'Join us to distribute groceries to local families.',
+        location: 'Central Park',
+        address: '123 Main St, Haverhill, MA',
+        startDate: new Date().toISOString(),
+        endDate: null,
+        startTime: '10:00 AM',
+        endTime: '2:00 PM',
+        category: 'COMMUNITY',
+        maxVolunteers: 25,
+        currentVolunteers: 12,
+        imageUrl: null,
+        contactEmail: 'events@411cares.org',
+        contactPhone: '555-987-6543',
+        requirements: 'Comfortable clothing, ability to lift light boxes.',
+        createdBy: { firstName: 'Alex', lastName: 'Johnson', email: 'alex@example.com' },
       }
-    })
+    ]
 
     return NextResponse.json({ events })
   } catch (error) {
@@ -63,34 +67,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create new event
-    const event = await prisma.event.create({
-      data: {
-        title,
-        description: description || null,
-        location: location || null,
-        address: address || null,
-        startDate: new Date(startDate),
-        endDate: endDate ? new Date(endDate) : null,
-        startTime: startTime || null,
-        endTime: endTime || null,
-        isAllDay: isAllDay || false,
-        category: category || 'COMMUNITY',
-        maxVolunteers: maxVolunteers ? parseInt(maxVolunteers) : null,
-        currentVolunteers: 0,
-        imageUrl: imageUrl || null,
-        contactEmail: contactEmail || null,
-        contactPhone: contactPhone || null,
-        requirements: requirements || null,
-        createdById,
-        isPublic: true,
-        isActive: true
-      }
-    })
-
     return NextResponse.json({
-      message: 'Event created successfully',
-      event
+      message: 'Event creation disabled while database is offline',
+      event: {
+        id: 'temp-event',
+        title,
+        description,
+        location,
+        startDate,
+        category,
+      }
     })
   } catch (error) {
     console.error('Event creation error:', error)
